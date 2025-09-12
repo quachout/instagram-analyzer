@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="fade-in">
+    <form action="{{ url_for('analyze') }}" method="post" enctype="multipart/form-data" class="upload-section">
+        <div class="upload-area">
+            <div class="upload-label">01</div>
+            <div class="upload-title">Followers Data</div>
+            <div class="upload-hint">Drop your followers_1.json file here or click to browse</div>
+            <input type="file" name="followers_file" accept=".json" required>
+        </div>
+        
+        <div class="upload-area">
+            <div class="upload-label">02</div>
+            <div class="upload-title">Following Data</div>
+            <div class="upload-hint">Drop your following.json file here or click to browse</div>
+            <input type="file" name="following_file" accept=".json" required>
+        </div>
+        
+        <button type="submit" class="run-button" disabled>SELECT FILES TO CONTINUE</button>
+    </form>
+
+    <!-- Separator -->
+    <div class="separator"></div>
+
+    <!-- Instructions Section -->
+    <div class="instructions-section">
+        <div class="instructions-header">How to Get Your Data</div>
+        <div class="instructions-grid">
+            <div class="instruction-step">
+                <div class="step-number">01</div>
+                <div class="step-content">
+                    <div class="step-title">Request Your Data</div>
+                    <div class="step-text">
+                        <ol class="detailed-steps">
+                            <li>Visit this link: <a href="https://www.instagram.com/download/request/" target="_blank" rel="noopener">instagram.com/download/request</a></li>
+                            <li>Select <code>continue</code></li>
+                            <li>Select <code>create export</code></li>
+                            <li>Choose your Instagram profile</li>
+                            <li>Choose <code>export to device</code></li>
+                            <li>Select customize information and deselect everything but <code>Followers and following</code></li>
+                            <li>Change date range to <code>all time</code></li>
+                            <li>Change format to <code>JSON</code></li>
+                            <li>Click <code>start export</code></li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="instruction-step">
+                <div class="step-number">02</div>
+                <div class="step-content">
+                    <div class="step-title">Wait for Email</div>
+                    <div class="step-text">Wait for the email to be sent to you and download the file</div>
+                </div>
+            </div>
+            
+            <div class="instruction-step">
+                <div class="step-number">03</div>
+                <div class="step-content">
+                    <div class="step-title">Unzip the File</div>
+                    <div class="step-text">Unzip the downloaded file</div>
+                </div>
+            </div>
+            
+            <div class="instruction-step">
+                <div class="step-number">04</div>
+                <div class="step-content">
+                    <div class="step-title">Upload Files</div>
+                    <div class="step-text">Upload the <code>followers_1.json</code> and <code>following.json</code> files above</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block header %}Analysis Complete{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <div class="stats">
+        <div class="stat">
+            <div class="stat-number">{{ followers_count }}</div>
+            <div class="stat-label">Followers</div>
+        </div>
+        <div class="stat">
+            <div class="stat-number">{{ following_count }}</div>
+            <div class="stat-label">Following</div>
+        </div>
+        <div class="stat">
+            <div class="stat-number">{{ not_following_back|length }}</div>
+            <div class="stat-label">Not Following Back</div>
+        </div>
+    </div>
+
+    {% if not_following_back %}
+        <div class="results-section">
+            <div class="results-header">Users Not Following You Back</div>
+            <div class="results-list">
+                <ol>
+                    {% for person in not_following_back %}
+                        <li>{{ person }}</li>
+                    {% endfor %}
+                </ol>
+            </div>
+        </div>
+        
+        <div class="button-group">
+            <form action="{{ url_for('download') }}" method="get" style="display: contents;">
+                {% for person in not_following_back %}
+                    <input type="hidden" name="users" value="{{ person }}">
+                {% endfor %}
+                <button type="submit" class="run-button">Download Results</button>
+            </form>
+            
+            <a href="{{ url_for('index') }}" class="secondary-button">New Analysis</a>
+        </div>
+    {% else %}
+        <div class="success-message">
+            <h2>Perfect Balance</h2>
+            <p>Everyone you follow also follows you back.</p>
+            <a href="{{ url_for('index') }}" class="secondary-button">New Analysis</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

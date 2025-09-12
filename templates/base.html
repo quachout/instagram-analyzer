@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}INSTAGRAM ANALYZER{% endblock %}</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='incognito-favicon.png') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #000000;
+            color: #ffffff;
+            min-height: 100vh;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        h1 {
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            font-weight: 300;
+            letter-spacing: 0.05em;
+            text-align: center;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 0.875rem;
+            font-weight: 300;
+            margin-bottom: 3rem;
+            letter-spacing: 0.025em;
+        }
+
+        .instructions-section {
+            margin-bottom: 4rem;
+        }
+
+        .instructions-header {
+            font-size: 1rem;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #ffffff;
+        }
+
+        .instructions-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .instruction-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1.5rem;
+            border: 1px solid #333;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .instruction-step:hover {
+            border-color: #666;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .step-number {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            flex-shrink: 0;
+            width: 2rem;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-title {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+        }
+
+        .step-text {
+            font-size: 0.75rem;
+            color: #999;
+            line-height: 1.5;
+        }
+
+        .step-text code {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 2px;
+            font-family: 'Inter', monospace;
+            font-size: 0.7rem;
+            color: #ffffff;
+        }
+
+        .detailed-steps {
+            list-style: none;
+            counter-reset: detailed-counter;
+            padding: 0;
+            margin: 0;
+        }
+
+        .detailed-steps li {
+            counter-increment: detailed-counter;
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+            font-size: 0.75rem;
+            line-height: 1.4;
+        }
+
+        .detailed-steps li::before {
+            content: counter(detailed-counter) ".";
+            position: absolute;
+            left: 0;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .detailed-steps a {
+            color: #ffffff;
+            text-decoration: underline;
+            text-decoration-color: #666;
+            transition: all 0.3s ease;
+        }
+
+        .detailed-steps a:hover {
+            text-decoration-color: #ffffff;
+        }
+
+        .upload-section {
+            margin-bottom: 2rem;
+        }
+
+        .separator {
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent 0%, #333 50%, transparent 100%);
+            margin: 3rem 0;
+            position: relative;
+        }
+
+        .separator::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 4px;
+            height: 4px;
+            background: #666;
+            border-radius: 50%;
+        }
+
+        .upload-area {
+            border: 1px solid #333;
+            border-radius: 2px;
+            padding: 2rem 1rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.02);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-area:hover {
+            border-color: #666;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .upload-area.dragover {
+            border-color: #ffffff;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .upload-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #999;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .upload-title {
+            font-size: 1rem;
+            font-weight: 400;
+            margin-bottom: 1rem;
+            color: #ffffff;
+        }
+
+        .upload-hint {
+            font-size: 0.75rem;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        input[type="file"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+        }
+
+        .file-name {
+            font-size: 0.75rem;
+            color: #999;
+            font-style: italic;
+            margin-top: 0.5rem;
+        }
+
+        .run-button {
+            background: #ffffff;
+            color: #000000;
+            border: none;
+            padding: 1rem 2rem;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+            margin-top: 2rem;
+        }
+
+        .run-button:hover {
+            background: #f0f0f0;
+            transform: translateY(-1px);
+        }
+
+        .run-button:disabled {
+            background: #333;
+            color: #666;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .alert {
+            padding: 1rem;
+            margin: 1rem 0;
+            border: 1px solid #333;
+            border-radius: 2px;
+            background: rgba(255, 0, 0, 0.1);
+            border-color: #ff3333;
+        }
+
+        .alert-error {
+            color: #ff9999;
+            font-size: 0.875rem;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 1.5rem 1rem;
+            border: 1px solid #333;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 2px;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 300;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .results-section {
+            margin-top: 2rem;
+        }
+
+        .results-header {
+            font-size: 1rem;
+            font-weight: 400;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .results-list {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #333;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 2px;
+            padding: 0;
+        }
+
+        .results-list::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .results-list::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .results-list::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 2px;
+        }
+
+        .results-list ol {
+            list-style: none;
+            counter-reset: item;
+            padding: 0;
+        }
+
+        .results-list li {
+            counter-increment: item;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #1a1a1a;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .results-list li:before {
+            content: counter(item, decimal-leading-zero);
+            color: #666;
+            font-size: 0.75rem;
+            margin-right: 1rem;
+            font-weight: 500;
+        }
+
+        .results-list li:last-child {
+            border-bottom: none;
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .secondary-button {
+            background: transparent;
+            color: #ffffff;
+            border: 1px solid #333;
+            padding: 1rem 2rem;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .secondary-button:hover {
+            border-color: #666;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .success-message {
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+
+        .success-message h2 {
+            font-size: 1.5rem;
+            font-weight: 300;
+            margin-bottom: 1rem;
+            color: #00ff88;
+        }
+
+        .success-message p {
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .upload-area {
+                padding: 1.5rem 1rem;
+            }
+
+            .stats {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 0.5rem;
+            }
+
+            .stat {
+                padding: 1rem 0.5rem;
+            }
+
+            .stat-number {
+                font-size: 1.5rem;
+            }
+
+            .button-group {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 3rem;
+            border-top: 1px solid #333;
+        }
+
+        .footer p {
+            font-size: 0.75rem;
+            color: #666;
+            margin: 0;
+            letter-spacing: 0.025em;
+        }
+
+        .footer .heart {
+            color: #666;
+            font-size: 0.875rem;
+            margin: 0 0.25rem;
+            animation: heartbeat 2s infinite;
+        }
+
+        .footer a {
+            color: #999;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            margin-left: 0.25rem;
+        }
+
+        .footer a:hover {
+            color: #ffffff;
+        }
+
+        @keyframes heartbeat {
+            0%, 50%, 100% { transform: scale(1); }
+            25%, 75% { transform: scale(1.1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>{% block header %}Instagram Analyzer{% endblock %}</h1>
+        <p class="subtitle">Discover who doesn't follow you back</p>
+        
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert">
+                        <div class="alert-error">{{ message }}</div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer class="footer">
+        <p>coded with <span class="heart"><3</span> <a href="https://chrisquach.com/" target="_blank" rel="noopener">Christopher Wu Quach</a></p>
+    </footer>
+
+    <script>
+        // Drag and drop functionality
+        document.querySelectorAll('.upload-area').forEach(area => {
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                area.addEventListener(eventName, preventDefaults, false);
+            });
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                area.addEventListener(eventName, highlight, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                area.addEventListener(eventName, unhighlight, false);
+            });
+
+            area.addEventListener('drop', handleDrop, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        function highlight(e) {
+            e.currentTarget.classList.add('dragover');
+        }
+
+        function unhighlight(e) {
+            e.currentTarget.classList.remove('dragover');
+        }
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            const input = e.currentTarget.querySelector('input[type="file"]');
+            input.files = files;
+            updateFileName(input);
+        }
+
+        // File name display
+        function updateFileName(input) {
+            const fileName = input.files[0]?.name;
+            let fileNameEl = input.parentElement.querySelector('.file-name');
+            
+            if (fileName) {
+                if (!fileNameEl) {
+                    fileNameEl = document.createElement('div');
+                    fileNameEl.className = 'file-name';
+                    input.parentElement.appendChild(fileNameEl);
+                }
+                fileNameEl.textContent = fileName;
+            }
+        }
+
+        // Update button state
+        function updateButtonState() {
+            const followersFile = document.querySelector('input[name="followers_file"]');
+            const followingFile = document.querySelector('input[name="following_file"]');
+            const button = document.querySelector('.run-button');
+            
+            if (followersFile && followingFile && button) {
+                const hasFiles = followersFile.files.length > 0 && followingFile.files.length > 0;
+                button.disabled = !hasFiles;
+                button.textContent = hasFiles ? 'RUN ANALYSIS' : 'SELECT FILES TO CONTINUE';
+            }
+        }
+
+        // Add event listeners
+        document.querySelectorAll('input[type="file"]').forEach(input => {
+            input.addEventListener('change', function() {
+                updateFileName(this);
+                updateButtonState();
+            });
+        });
+
+        // Initialize button state
+        document.addEventListener('DOMContentLoaded', updateButtonState);
+    </script>
+</body>
+</html>

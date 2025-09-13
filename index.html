@@ -406,21 +406,26 @@
             margin-top: 2rem;
         }
 
-        .button-group .secondary-button {
-            background: transparent;
-            color: #ffffff;
-            border: 1px solid #333;
-            padding: 1rem 2rem;
-            font-family: 'Inter', sans-serif;
-            font-size: 0.75rem;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border-radius: 2px;
-            text-decoration: none;
-            text-align: center;
+        .secondary-style {
+            background: transparent !important;
+            color: #ffffff !important;
+            border: 1px solid #333 !important;
+        }
+
+        .secondary-style:hover {
+            background: rgba(255, 255, 255, 0.1) !important;
+            border-color: #666 !important;
+        }
+
+        body.light-mode .secondary-style {
+            background: transparent !important;
+            color: #000000 !important;
+            border: 1px solid #ddd !important;
+        }
+
+        body.light-mode .secondary-style:hover {
+            background: rgba(0, 0, 0, 0.05) !important;
+            border-color: #999 !important;
         }
 
         .secondary-button {
@@ -625,6 +630,15 @@
 
         body.light-mode .file-name {
             color: #666;
+        }
+
+        body.light-mode .run-button {
+            background: #000000;
+            color: #ffffff;
+        }
+
+        body.light-mode .run-button:hover {
+            background: #333333;
         }
 
         body.light-mode .run-button:disabled {
@@ -896,7 +910,7 @@
             
             <div class="button-group">
                 <button id="download-button" class="run-button">Download Results</button>
-                <button id="new-analysis-button" class="run-button" style="background: transparent; color: #ffffff; border: 1px solid #333;">New Analysis</button>
+                <button id="new-analysis-button" class="run-button secondary-style">New Analysis</button>
             </div>
         </div>
 

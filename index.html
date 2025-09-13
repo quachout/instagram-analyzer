@@ -246,6 +246,16 @@
             margin-top: 0.5rem;
         }
 
+        .file-error {
+            font-size: 0.75rem;
+            color: #ff9999;
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            background: rgba(255, 0, 0, 0.1);
+            border-radius: 2px;
+            border: 1px solid rgba(255, 51, 51, 0.3);
+        }
+
         .run-button {
             background: #ffffff;
             color: #000000;
@@ -718,22 +728,87 @@
         }
 
         function readFile(file, inputId) {
+            // File name validation
+            const fileName = file.name.toLowerCase();
+            const isFollowersFile = inputId === 'followers-file';
+            const isFollowingFile = inputId === 'following-file';
+            
+            // Check exact file names
+            if (isFollowersFile && fileName !== 'followers_1.json') {
+                showError('Please upload the exact file named "followers_1.json"');
+                showFileError(inputId, 'Expected: followers_1.json');
+                // Reset the data to prevent button from enabling
+                followersData = null;
+                updateButtonState();
+                return;
+            }
+            
+            if (isFollowingFile && fileName !== 'following.json') {
+                showError('Please upload the exact file named "following.json"');
+                showFileError(inputId, 'Expected: following.json');
+                // Reset the data to prevent button from enabling
+                followingData = null;
+                updateButtonState();
+                return;
+            }
+            
             const reader = new FileReader();
             reader.onload = function(e) {
                 try {
                     const data = JSON.parse(e.target.result);
-                    if (inputId === 'followers-file') {
+                    
+                    // Validate data structure
+                    if (isFollowersFile) {
+                        if (!Array.isArray(data)) {
+                            showError('Invalid followers file format. Expected an array of followers.');
+                            showFileError(inputId, 'Invalid file structure');
+                            followersData = null;
+                            updateButtonState();
+                            return;
+                        }
+                        if (data.length > 0 && (!data[0].string_list_data || !data[0].string_list_data[0])) {
+                            showError('Invalid followers file structure. Make sure you uploaded the correct Instagram data export.');
+                            showFileError(inputId, 'Invalid Instagram export');
+                            followersData = null;
+                            updateButtonState();
+                            return;
+                        }
                         followersData = data;
-                        console.log('Followers data loaded:', followersData);
+                        console.log('Followers data loaded:', followersData.length, 'followers');
                     } else {
+                        if (!data.relationships_following || !Array.isArray(data.relationships_following)) {
+                            showError('Invalid following file format. Expected "relationships_following" array.');
+                            showFileError(inputId, 'Invalid file structure');
+                            followingData = null;
+                            updateButtonState();
+                            return;
+                        }
+                        if (data.relationships_following.length > 0 && 
+                            (!data.relationships_following[0].string_list_data || 
+                             !data.relationships_following[0].string_list_data[0])) {
+                            showError('Invalid following file structure. Make sure you uploaded the correct Instagram data export.');
+                            showFileError(inputId, 'Invalid Instagram export');
+                            followingData = null;
+                            updateButtonState();
+                            return;
+                        }
                         followingData = data;
-                        console.log('Following data loaded:', followingData);
+                        console.log('Following data loaded:', data.relationships_following.length, 'following');
                     }
+                    
                     hideError();
-                    updateButtonState(); // Add this line to update button state after each file
+                    clearFileError(inputId); // Clear the inline error when file is valid
+                    updateButtonState();
                 } catch (error) {
                     console.error('Error parsing JSON:', error);
                     showError('Invalid JSON file. Please check your file and try again.');
+                    showFileError(inputId, 'Invalid JSON format');
+                    if (isFollowersFile) {
+                        followersData = null;
+                    } else {
+                        followingData = null;
+                    }
+                    updateButtonState();
                 }
             };
             reader.readAsText(file);
@@ -890,6 +965,33 @@
 
         function hideError() {
             errorSection.classList.add('hidden');
+            // Don't clear file errors here - let them persist until fixed
+        }
+
+        function clearFileError(inputId) {
+            const input = document.getElementById(inputId);
+            const uploadArea = input.parentElement;
+            const existingError = uploadArea.querySelector('.file-error');
+            if (existingError) {
+                existingError.remove();
+            }
+        }
+
+        function showFileError(inputId, message) {
+            const input = document.getElementById(inputId);
+            const uploadArea = input.parentElement;
+            
+            // Remove existing file error
+            const existingError = uploadArea.querySelector('.file-error');
+            if (existingError) {
+                existingError.remove();
+            }
+            
+            // Add new file error
+            const errorEl = document.createElement('div');
+            errorEl.className = 'file-error';
+            errorEl.textContent = message;
+            uploadArea.appendChild(errorEl);
         }
 
         // Initialize

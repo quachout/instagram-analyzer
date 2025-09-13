@@ -6,6 +6,16 @@
     <title>INSTAGRAM ANALYZER</title>
     <link rel="icon" type="image/png" href="static/incognito-favicon.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-YCK4G2SE2G"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-YCK4G2SE2G');
+    </script>
+    
     <style>
         * {
             margin: 0;
@@ -799,6 +809,14 @@
                     hideError();
                     clearFileError(inputId); // Clear the inline error when file is valid
                     updateButtonState();
+                    
+                    // Track successful file upload
+                    if (typeof gtag !== 'undefined') {
+                        gtag('event', 'file_upload', {
+                            'event_category': 'engagement',
+                            'event_label': isFollowersFile ? 'followers' : 'following'
+                        });
+                    }
                 } catch (error) {
                     console.error('Error parsing JSON:', error);
                     showError('Invalid JSON file. Please check your file and try again.');
@@ -841,6 +859,13 @@
             try {
                 hideError();
                 
+                // Track analysis start
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'analysis_start', {
+                        'event_category': 'engagement'
+                    });
+                }
+                
                 const followersList = [];
                 const followingList = [];
                 
@@ -872,6 +897,18 @@
                 };
                 
                 displayResults();
+                
+                // Track successful analysis
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'analysis_complete', {
+                        'event_category': 'engagement',
+                        'custom_parameters': {
+                            'followers_count': analysisResults.followers.length,
+                            'following_count': analysisResults.following.length,
+                            'not_following_back': analysisResults.notFollowingBack.length
+                        }
+                    });
+                }
                 
             } catch (error) {
                 showError('An error occurred during analysis. Please check your files and try again.');
@@ -917,6 +954,14 @@
             if (!analysisResults || analysisResults.notFollowingBack.length === 0) {
                 showError('No data to download');
                 return;
+            }
+            
+            // Track download
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'download', {
+                    'event_category': 'engagement',
+                    'event_label': 'results_txt'
+                });
             }
             
             const now = new Date();

@@ -538,10 +538,263 @@
             0%, 50%, 100% { transform: scale(1); }
             25%, 75% { transform: scale(1.1); }
         }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            z-index: 1000;
+        }
+
+        .theme-toggle-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #333;
+            border-radius: 50%;
+            width: 3rem;
+            height: 3rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .theme-toggle-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: #666;
+            transform: scale(1.1);
+        }
+
+        .theme-icon {
+            width: 1.2rem;
+            height: 1.2rem;
+            transition: transform 0.3s ease;
+            filter: brightness(0) invert(1); /* Makes icons white in dark mode */
+        }
+
+        .theme-toggle-btn:hover .theme-icon {
+            transform: rotate(180deg);
+        }
+
+        body.light-mode .theme-icon {
+            filter: brightness(0) invert(0); /* Makes icons black in light mode */
+        }
+
+        /* Light Mode Styles */
+        body.light-mode {
+            background: #ffffff;
+            color: #000000;
+        }
+
+        body.light-mode .container {
+            background: #ffffff;
+        }
+
+        body.light-mode .subtitle {
+            color: #666;
+        }
+
+        body.light-mode .upload-area {
+            border-color: #ddd;
+            background: rgba(0, 0, 0, 0.02);
+        }
+
+        body.light-mode .upload-area:hover {
+            border-color: #999;
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        body.light-mode .upload-area.dragover {
+            border-color: #000000;
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        body.light-mode .upload-label {
+            color: #999;
+        }
+
+        body.light-mode .upload-title {
+            color: #000000;
+        }
+
+        body.light-mode .upload-hint {
+            color: #666;
+        }
+
+        body.light-mode .file-name {
+            color: #666;
+        }
+
+        body.light-mode .run-button:disabled {
+            background: #f0f0f0;
+            color: #999;
+        }
+
+        body.light-mode .separator {
+            background: linear-gradient(90deg, transparent 0%, #ddd 50%, transparent 100%);
+        }
+
+        body.light-mode .separator::before {
+            background: #999;
+        }
+
+        body.light-mode .instruction-step {
+            border-color: #ddd;
+            background: rgba(0, 0, 0, 0.02);
+        }
+
+        body.light-mode .instruction-step:hover {
+            border-color: #999;
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        body.light-mode .step-number {
+            color: #999;
+        }
+
+        body.light-mode .step-title {
+            color: #000000;
+        }
+
+        body.light-mode .step-text {
+            color: #666;
+        }
+
+        body.light-mode .step-text code {
+            background: rgba(0, 0, 0, 0.1);
+            color: #000000;
+        }
+
+        body.light-mode .detailed-steps a {
+            color: #000000;
+            text-decoration-color: #999;
+        }
+
+        body.light-mode .detailed-steps a:hover {
+            text-decoration-color: #000000;
+        }
+
+        body.light-mode .stat {
+            border-color: #ddd;
+            background: rgba(0, 0, 0, 0.02);
+        }
+
+        body.light-mode .stat-number {
+            color: #000000;
+        }
+
+        body.light-mode .stat-label {
+            color: #666;
+        }
+
+        body.light-mode .results-list {
+            border-color: #ddd;
+            background: rgba(0, 0, 0, 0.02);
+        }
+
+        body.light-mode .results-list::-webkit-scrollbar-thumb {
+            background: #ddd;
+        }
+
+        body.light-mode .results-list li {
+            border-bottom-color: #f0f0f0;
+        }
+
+        body.light-mode .results-list li:before {
+            color: #999;
+        }
+
+        body.light-mode .secondary-button {
+            color: #000000;
+            border-color: #ddd;
+        }
+
+        body.light-mode .secondary-button:hover {
+            border-color: #999;
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        body.light-mode .success-message h2 {
+            color: #00aa66;
+        }
+
+        body.light-mode .success-message p {
+            color: #666;
+        }
+
+        body.light-mode .footer {
+            border-top-color: #ddd;
+        }
+
+        body.light-mode .footer p {
+            color: #666;
+        }
+
+        body.light-mode .footer .heart {
+            color: #666;
+        }
+
+        body.light-mode .footer a {
+            color: #999;
+        }
+
+        body.light-mode .footer a:hover {
+            color: #000000;
+        }
+
+        body.light-mode .alert {
+            border-color: #ff6666;
+            background: rgba(255, 0, 0, 0.1);
+        }
+
+        body.light-mode .alert-error {
+            color: #cc0000;
+        }
+
+        body.light-mode .file-error {
+            color: #cc0000;
+            background: rgba(255, 0, 0, 0.1);
+            border-color: rgba(255, 51, 51, 0.3);
+        }
+
+        body.light-mode .theme-toggle-btn {
+            background: rgba(0, 0, 0, 0.1);
+            border-color: #ddd;
+        }
+
+        body.light-mode .theme-toggle-btn:hover {
+            background: rgba(0, 0, 0, 0.2);
+            border-color: #999;
+        }
+
+        @media (max-width: 640px) {
+            .theme-toggle {
+                top: 1rem;
+                right: 1rem;
+            }
+
+            .theme-toggle-btn {
+                width: 2.5rem;
+                height: 2.5rem;
+            }
+
+            .theme-icon {
+                font-size: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
+        <!-- Theme Toggle -->
+        <div class="theme-toggle">
+            <button id="theme-toggle-btn" class="theme-toggle-btn" title="Toggle dark/light mode">
+                <img class="theme-icon" src="static/sun.png" alt="Toggle theme" />
+            </button>
+        </div>
+        
         <!-- Upload Section -->
         <div id="upload-section" class="fade-in">
             <h1>Instagram Analyzer</h1>
@@ -1038,6 +1291,51 @@
             errorEl.textContent = message;
             uploadArea.appendChild(errorEl);
         }
+
+        // Theme Toggle Functionality
+        const themeToggleBtn = document.getElementById('theme-toggle-btn');
+        const themeIcon = document.querySelector('.theme-icon');
+        
+        // Check for saved theme preference or default to dark
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        if (savedTheme === 'light') {
+            document.body.classList.add('light-mode');
+            themeIcon.src = 'static/moon.png';
+            themeIcon.alt = 'Switch to dark mode';
+        } else {
+            themeIcon.src = 'static/sun.png';
+            themeIcon.alt = 'Switch to light mode';
+        }
+        
+        themeToggleBtn.addEventListener('click', function() {
+            document.body.classList.toggle('light-mode');
+            
+            if (document.body.classList.contains('light-mode')) {
+                themeIcon.src = 'static/moon.png';
+                themeIcon.alt = 'Switch to dark mode';
+                localStorage.setItem('theme', 'light');
+                
+                // Track theme change
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'theme_change', {
+                        'event_category': 'engagement',
+                        'event_label': 'light_mode'
+                    });
+                }
+            } else {
+                themeIcon.src = 'static/sun.png';
+                themeIcon.alt = 'Switch to light mode';
+                localStorage.setItem('theme', 'dark');
+                
+                // Track theme change
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'theme_change', {
+                        'event_category': 'engagement',
+                        'event_label': 'dark_mode'
+                    });
+                }
+            }
+        });
 
         // Initialize
         updateButtonState();

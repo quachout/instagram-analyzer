@@ -22,18 +22,32 @@ def analyze_followers(followers_data, following_data):
     """Extract the core logic from main.py"""
     followers_list = []
     following_list = []
-    
+
     # Extract followers
     for follower in followers_data:
-        followers_list.append(follower['string_list_data'][0]['value'])
-    
+        if 'string_list_data' in follower and len(follower['string_list_data']) > 0:
+            # Try to get username from different possible fields
+            username = (follower['string_list_data'][0].get('value') or
+                       follower['string_list_data'][0].get('href', '').split('/')[-1] or
+                       follower.get('value') or
+                       follower.get('username'))
+            if username:
+                followers_list.append(username)
+
     # Extract following
     for following in following_data["relationships_following"]:
-        following_list.append(following["string_list_data"][0]['value'])
-    
+        if 'string_list_data' in following and len(following['string_list_data']) > 0:
+            # Try to get username from different possible fields
+            username = (following['string_list_data'][0].get('value') or
+                       following['string_list_data'][0].get('href', '').split('/')[-1] or
+                       following.get('value') or
+                       following.get('username'))
+            if username:
+                following_list.append(username)
+
     # Find people not following back
     people_not_following_back = [i for i in following_list if i not in followers_list]
-    
+
     return people_not_following_back, len(followers_list), len(following_list)
 
 @app.route('/')

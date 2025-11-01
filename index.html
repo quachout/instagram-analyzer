@@ -1138,18 +1138,48 @@
                 
                 // Extract followers
                 if (Array.isArray(followersData)) {
-                    followersData.forEach(follower => {
+                    followersData.forEach((follower, index) => {
                         if (follower.string_list_data && follower.string_list_data[0]) {
-                            followersList.push(follower.string_list_data[0].value);
+                            // Try to get username from different possible fields
+                            const data = follower.string_list_data[0];
+                            const username = data.value ||
+                                           (data.href && data.href.split('/').filter(Boolean).pop()) ||
+                                           follower.value ||
+                                           follower.username;
+
+                            // Debug log for first entry if username is still undefined
+                            if (!username && index === 0) {
+                                console.log('Sample follower data structure:', JSON.stringify(follower, null, 2));
+                                console.error('Could not extract username from follower data. Please check the console for data structure.');
+                            }
+
+                            if (username) {
+                                followersList.push(username);
+                            }
                         }
                     });
                 }
-                
+
                 // Extract following
                 if (followingData.relationships_following && Array.isArray(followingData.relationships_following)) {
-                    followingData.relationships_following.forEach(following => {
+                    followingData.relationships_following.forEach((following, index) => {
                         if (following.string_list_data && following.string_list_data[0]) {
-                            followingList.push(following.string_list_data[0].value);
+                            // Try to get username from different possible fields
+                            const data = following.string_list_data[0];
+                            const username = data.value ||
+                                           (data.href && data.href.split('/').filter(Boolean).pop()) ||
+                                           following.value ||
+                                           following.username;
+
+                            // Debug log for first entry if username is still undefined
+                            if (!username && index === 0) {
+                                console.log('Sample following data structure:', JSON.stringify(following, null, 2));
+                                console.error('Could not extract username from following data. Please check the console for data structure.');
+                            }
+
+                            if (username) {
+                                followingList.push(username);
+                            }
                         }
                     });
                 }
